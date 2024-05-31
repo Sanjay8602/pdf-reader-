@@ -44,7 +44,7 @@ def main():
         vetorestore = get_vectorstore(text_chunks)
          # create conversation chain
         st.session_state.conversation = get_conversation_chain(vetorestore,openai_api_key) #for openAI
-        # st.session_state.conversation = get_conversation_chain(vetorestore) #for huggingface
+        
 
         st.session_state.processComplete = True
 
@@ -118,17 +118,6 @@ def get_conversation_chain(vetorestore,openai_api_key):
     return conversation_chain
 
 
-# def get_conversation_chain(vetorestore):
-#     llm = HuggingFaceHub(repo_id="google/flan-t5-large", model_kwargs={"temperature":5,
-#                                                       "max_length":64})
-#     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-#     conversation_chain = ConversationalRetrievalChain.from_llm(
-#         llm=llm,
-#         retriever=vetorestore.as_retriever(),
-#         memory=memory
-#     )
-#     return conversation_chain
-
 def handel_userinput(user_question):
     with get_openai_callback() as cb:
         response = st.session_state.conversation({'question':user_question})
@@ -144,13 +133,6 @@ def handel_userinput(user_question):
             else:
                 message(messages.content, key=str(i))
         st.write(f"Total Tokens: {cb.total_tokens}" f", Prompt Tokens: {cb.prompt_tokens}" f", Completion Tokens: {cb.completion_tokens}" f", Total Cost (USD): ${cb.total_cost}")
-
-                 # for i, message in enumerate(st.session_state.chat_history):
-    #     if i % 2 == 0:
-    #         st.write(user_template.replace("{{MSG}}",message.content),unsafe_allow_html=True)
-    #     else:
-    #         st.write(bot_template.replace("{{MSG}}",message.content),unsafe_allow_html=True)
-
 
 
 
